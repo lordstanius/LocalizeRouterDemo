@@ -9,11 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './home/home.module';
 import { UsersModule } from './users/users.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { LocalizeRouterModule } from './localize-router/localize-router.module';
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/assets/locales/', '.json');
-}
 
 @NgModule({
   declarations: [
@@ -26,15 +21,16 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [ HttpClient ]
+        useFactory: (http: HttpClient) => {
+          return new TranslateHttpLoader(http, '/assets/locales/', '.json');
+        },
+        deps: [HttpClient]
       }
     }),
     // feature modules
     HomeModule,
     UsersModule,
-    AppRoutingModule,
-    LocalizeRouterModule,
+    AppRoutingModule
   ],
   bootstrap: [AppComponent]
 })
